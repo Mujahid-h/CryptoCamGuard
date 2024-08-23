@@ -38,7 +38,7 @@ const SignUp = () => {
   };
 
   return (
-    <LinearGradient colors={["#0f2232", "#22a0ae"]} style={styles.container}>
+    <LinearGradient colors={["#0D1B2A", "#10E0F0"]} style={styles.container} start={{x:0.5, y:0.3}} end={{x:0.5, y:1}} >
       <StatusBar style="auto" />
       <Image source={require("../../images/logo.png")} style={styles.logo} />
       <Text style={styles.title}>CryptoCamGuard</Text>
@@ -78,8 +78,8 @@ const SignUp = () => {
       <TouchableOpacity style={styles.button} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Signup</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.createAccountButton}>
-        <Text style={{ color: "white" }}>Already have an account?</Text>
+      <TouchableOpacity style={styles.AlreadyHaveAnAccount}>
+        <Text style={styles.buttonText}>Already have an account?</Text>
       </TouchableOpacity>
     </LinearGradient>
   );
@@ -91,10 +91,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+  
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 250,
+    height: 250,
+    
   },
   title: {
     fontSize: 28,
@@ -104,10 +106,11 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "80%",
-    height: 30,
-    backgroundColor: "#fff",
+    height: 35,
+    backgroundColor: "#D9D9D9",
     borderRadius: 8,
     paddingHorizontal: 15,
+    color: "black",
     marginHorizontal: "auto",
     marginBottom: 20,
   },
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
     width: "80%",
     marginHorizontal: "auto",
     height: 40,
-    backgroundColor: "#001f3f",
+    backgroundColor: "#0d1b2a",
     borderRadius: 20,
     marginTop: 30,
     justifyContent: "center",
@@ -127,20 +130,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  forgotPasswordText: {
-    color: "#fff",
-    marginBottom: 20,
-  },
-  createAccountButton: {
+ 
+  AlreadyHaveAnAccount: {
     width: "80%",
     marginHorizontal: "auto",
     height: 40,
-    backgroundColor: "#18757f",
+    backgroundColor: "rgba(13, 27, 42, 0.3)", 
     borderRadius: 20,
     marginTop: 30,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center",   
+    elevation: 5,
   },
+  
+ 
 });
 
 export default SignUp;
