@@ -66,20 +66,18 @@
 //   );
 // };
 
-
-
 // const styles = StyleSheet.create({
 //   container: {
 //     flex: 1,
 //     justifyContent: "center",
 //     alignItems: "center",
 //     paddingHorizontal: 20,
-  
+
 //   },
 //   logo: {
 //     width: 250,
 //     height: 250,
-    
+
 //   },
 //   title: {
 //     fontSize: 28,
@@ -113,7 +111,7 @@
 //     fontSize: 16,
 //     fontWeight: "bold",
 //   },
- 
+
 //   createAccountButton: {
 //     width: "80%",
 //     marginHorizontal: "auto",
@@ -129,11 +127,10 @@
 //     marginBottom: 20,
 //     marginTop: 20,
 //   },
- 
+
 // });
 
 // export default Login;
-
 
 import React, { useState, useEffect } from "react";
 import {
@@ -151,6 +148,7 @@ import {
 } from "react-native";
 import { login } from "../api/authApi";
 import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -206,7 +204,10 @@ const Login = () => {
           end={{ x: 0.5, y: 1 }}
         >
           <StatusBar style="auto" />
-          <Image source={require("../../images/logo.png")} style={styles.logo} />
+          <Image
+            source={require("../../images/logo.png")}
+            style={styles.logo}
+          />
           <Text style={styles.title}>CryptoCamGuard</Text>
           <TextInput
             placeholder="Enter Email"
@@ -233,7 +234,8 @@ const Login = () => {
           <TouchableOpacity style={styles.createAccountButton}>
             <Text style={styles.buttonText}>Create New Account</Text>
           </TouchableOpacity>
-          {keyboardVisible && <View style={{ height: 100 }} />} {/* Placeholder View */}
+          {keyboardVisible && <View style={{ height: 100 }} />}{" "}
+          {/* Placeholder View */}
         </LinearGradient>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -298,5 +300,3 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
-
-
