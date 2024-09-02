@@ -10,7 +10,8 @@ import {
   Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { register } from "../api/authApi"; // Assume you have an API method for registration
+import { register } from "../api/authApi";
+import Toast from "react-native-toast-message";
 
 const SignUp = () => {
   const [fullName, setFullName] = useState("");
@@ -20,20 +21,36 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     if (fullName === "" || email === "" || mobile === "" || password === "") {
-      Alert.alert("Error", "Please fill in all fields");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please fill in all fields",
+      });
       return;
     }
 
     try {
       const data = await register({ fullName, email, mobile, password });
-      console.log(data);
-      Alert.alert("Signup successfully");
+
+      // Success toast message
+      Toast.show({
+        type: "success",
+        text1: "Signup Success",
+        text2: "You have signed up successfully!",
+      });
+
+      // Clear form fields
       setEmail("");
       setFullName("");
       setMobile("");
       setPassword("");
     } catch (error) {
-      console.log(error);
+      // Show error toast message if registration fails
+      Toast.show({
+        type: "error",
+        text1: "Signup Failed",
+        text2: error.message || "An error occurred. Please try again.",
+      });
     }
   };
 
@@ -93,9 +110,9 @@ const SignUp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    paddingTop: 80,
   },
   logo: {
     width: 200,

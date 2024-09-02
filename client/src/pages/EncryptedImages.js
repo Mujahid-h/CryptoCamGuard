@@ -2,14 +2,14 @@ import React from "react";
 import { Text, View } from "react-native";
 import DefaultLayout from "../components/DefaultLayout";
 
-const HomePage = () => {
+const EncryptedImages = () => {
   return (
     <DefaultLayout>
       <View>
-        <Text>Welcome to the Home Page</Text>
+        <Text>Encrypted images will be shown here</Text>
       </View>
     </DefaultLayout>
   );
 };
 
-export default HomePage;
+export default EncryptedImages;

@@ -78,7 +78,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
+    paddingTop: 80,
     alignItems: "center",
     paddingHorizontal: 20,
   },

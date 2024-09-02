@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
-import { LinearGradient } from "expo-linear-gradient"; // Make sure to install this package
+import { LinearGradient } from "expo-linear-gradient";
 
 const { width } = Dimensions.get("window");
 const DRAWER_WIDTH = width * 0.7;
@@ -11,7 +11,7 @@ const Drawer = ({ isOpen, children }) => {
   return (
     <View style={styles.drawer}>
       <LinearGradient
-        colors={["#0e8d9c", "#074951"]} // Example gradient from purple to blue
+        colors={["#0e8d9c", "#074951"]}
         style={styles.drawerContent}
       >
         {children}

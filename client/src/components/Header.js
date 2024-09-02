@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
   logoContainer: {
     flexDirection: "column",
     alignItems: "center",
-    // flex: 1, // This will make the logo container take up all available space
   },
   logo: {
     width: 40,
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
   },
   appName: {
     color: "#fff",
-    fontSize: 10,
+    fontSize: 8,
     fontWeight: "600",
   },
 });

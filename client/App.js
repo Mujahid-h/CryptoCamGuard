@@ -8,10 +8,13 @@ import {
 } from "react-native";
 import Login from "./src/pages/Login";
 import Signup from "./src/pages/SignUp";
-import Header from "./src/components/Header";
 import Drawer from "./src/components/Drawer";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import HomePage from "./src/pages/HomePage";
+import Header from "./src/components/Header";
+import EncryptedImages from "./src/pages/EncryptedImages";
+import Toast from "react-native-toast-message";
 
 const App = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -27,15 +30,18 @@ const App = () => {
   return (
     <SafeAreaView style={styles.safeContainer}>
       <LinearGradient
-        colors={["#0D1B2A", "#10E0F0"]}
-        start={{ x: 0.5, y: 0.3 }}
+        colors={["#074951", "#0e8d9c"]}
+        start={{ x: 0.5, y: 0.5 }}
         end={{ x: 0.5, y: 1 }}
         style={{ flex: 1 }}
       >
-        <Header onMenuPress={toggleDrawer} isDrawerOpen={isDrawerOpen} />
         <View style={styles.content}>
-          <Login />
-          {/* <Signup /> */}
+          <Header onMenuPress={toggleDrawer} />
+
+          {/* <Login /> */}
+          <Signup />
+          {/* <HomePage /> */}
+          {/* <EncryptedImages /> */}
         </View>
         <Drawer isOpen={isDrawerOpen}>
           {/* Close button */}
@@ -50,6 +56,7 @@ const App = () => {
             <Text>Drawer Item 3</Text>
           </View>
         </Drawer>
+        <Toast />
       </LinearGradient>
     </SafeAreaView>
   );
@@ -61,7 +68,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 100,
   },
   closeButton: {
     alignSelf: "flex-end",
