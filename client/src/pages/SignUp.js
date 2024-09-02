@@ -38,7 +38,12 @@ const SignUp = () => {
   };
 
   return (
-    <LinearGradient colors={["#0D1B2A", "#10E0F0"]} style={styles.container} start={{x:0.5, y:0.3}} end={{x:0.5, y:1}} >
+    <LinearGradient
+      colors={["#0D1B2A", "#10E0F0"]}
+      style={styles.container}
+      start={{ x: 0.5, y: 0.3 }}
+      end={{ x: 0.5, y: 1 }}
+    >
       <StatusBar style="auto" />
       <Image source={require("../../images/logo.png")} style={styles.logo} />
       <Text style={styles.title}>CryptoCamGuard</Text>
@@ -88,15 +93,13 @@ const SignUp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-  
   },
   logo: {
-    width: 250,
-    height: 250,
-    
+    width: 200,
+    height: 200,
   },
   title: {
     fontSize: 28,
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: "#0d1b2a",
     borderRadius: 20,
-    marginTop: 30,
+    marginTop: 10,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
@@ -130,20 +133,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
- 
+
   AlreadyHaveAnAccount: {
     width: "80%",
     marginHorizontal: "auto",
     height: 40,
-    backgroundColor: "rgba(13, 27, 42, 0.3)", 
+    backgroundColor: "rgba(13, 27, 42, 0.3)",
     borderRadius: 20,
     marginTop: 30,
     justifyContent: "center",
-    alignItems: "center",   
+    alignItems: "center",
     elevation: 5,
   },
-  
- 
 });
 
 export default SignUp;
