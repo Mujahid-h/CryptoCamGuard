@@ -6,7 +6,7 @@ const { width } = Dimensions.get("window");
 const DRAWER_WIDTH = width * 0.7;
 
 const Drawer = ({ isOpen, children }) => {
-  if (!isOpen) return null; // Do not render the drawer if it's not open
+  if (!isOpen) return null;
 
   return (
     <View style={styles.drawer}>
