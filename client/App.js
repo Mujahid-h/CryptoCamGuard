@@ -15,6 +15,7 @@ import HomePage from "./src/pages/HomePage";
 import Header from "./src/components/Header";
 import EncryptedImages from "./src/pages/EncryptedImages";
 import Toast from "react-native-toast-message";
+import Slider from "./src/pages/Slider";
 
 const App = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -31,7 +32,7 @@ const App = () => {
     <SafeAreaView style={styles.safeContainer}>
       <LinearGradient
         colors={["#074951", "#0e8d9c"]}
-        start={{ x: 0.5, y: 0.5 }}
+        start={{ x: 0.5, y: 0.3 }}
         end={{ x: 0.5, y: 1 }}
         style={{ flex: 1 }}
       >
@@ -39,8 +40,9 @@ const App = () => {
           <Header onMenuPress={toggleDrawer} />
 
           {/* <Login /> */}
-          <Signup />
-          {/* <HomePage /> */}
+          {/* <Signup /> */}
+          <HomePage />
+          {/* <Slider /> */}
           {/* <EncryptedImages /> */}
         </View>
         <Drawer isOpen={isDrawerOpen}>
