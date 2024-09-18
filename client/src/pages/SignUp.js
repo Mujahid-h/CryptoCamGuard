@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { register } from "../api/authApi";
@@ -13,18 +14,25 @@ import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 
 const SignUp = () => {
-  const [fullName, setFullName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // For loading state
   const navigation = useNavigation();
 
-  const buttonHandler = () => {
-    navigation.navigate("Login");
+  const validateEmail = (email) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email);
+  };
+
+  const validateMobile = (mobile) => {
+    const re = /^[0-9]{6}$/; // Assumes a 10-digit mobile number
+    return re.test(mobile);
   };
 
   const handleSignUp = async () => {
-    if (fullName === "" || email === "" || mobile === "" || password === "") {
+    if (name === "" || email === "" || mobile === "" || password === "") {
       Toast.show({
         type: "error",
         text1: "Error",
@@ -33,10 +41,46 @@ const SignUp = () => {
       return;
     }
 
-    try {
-      const data = await register({ fullName, email, mobile, password });
+    if (!validateEmail(email)) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please enter a valid email address",
+      });
+      return;
+    }
 
-      // Success toast message
+    if (!validateMobile(mobile)) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Mobile",
+        text2: "Please enter a valid mobile number",
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Password",
+        text2: "Password must be at least 6 characters long",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const data = await register({
+        name,
+        email,
+        mobile,
+        password,
+        encryptionKey: "string",
+        ivKey: "string",
+      });
+
+      // If the API call is successful, navigate to login
       Toast.show({
         type: "success",
         text1: "Signup Success",
@@ -45,16 +89,20 @@ const SignUp = () => {
 
       // Clear form fields
       setEmail("");
-      setFullName("");
+      setName("");
       setMobile("");
       setPassword("");
+
+      data.isSuccess && navigation.navigate("Login");
     } catch (error) {
-      // Show error toast message if registration fails
+      console.log(error);
       Toast.show({
         type: "error",
         text1: "Signup Failed",
-        text2: error.message || "An error occurred. Please try again.",
+        text2: "Please try again.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,8 +120,8 @@ const SignUp = () => {
         placeholder="Full Name"
         placeholderTextColor="#aaa"
         style={styles.input}
-        value={fullName}
-        onChangeText={(text) => setFullName(text)}
+        value={name}
+        onChangeText={(text) => setName(text)}
       />
       <TextInput
         placeholder="Email"
@@ -102,17 +150,19 @@ const SignUp = () => {
         autoCapitalize="none"
       />
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, isLoading && styles.buttonDisabled]} // Disable button when loading
         onPress={() => {
           handleSignUp();
-          buttonHandler();
         }}
+        disabled={isLoading} // Prevent button press while loading
       >
-        <Text style={styles.buttonText}>Signup</Text>
+        <Text style={styles.buttonText}>
+          {isLoading ? "Signing Up..." : "Signup"}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.AlreadyHaveAnAccount}
-        onPress={buttonHandler}
+        onPress={() => navigation.navigate("Login")}
       >
         <Text style={styles.buttonText}>Already have an account?</Text>
       </TouchableOpacity>
@@ -158,12 +208,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  buttonDisabled: {
+    backgroundColor: "#555", // Change color when loading
+  },
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
   },
-
   AlreadyHaveAnAccount: {
     width: "80%",
     marginHorizontal: "auto",

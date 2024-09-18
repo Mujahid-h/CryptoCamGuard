@@ -12,30 +12,66 @@ import {
 import { login } from "../api/authApi";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserinfo } from "../redux/userSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // For loading state
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.user);
 
   const handleCreateAccount = () => {
     navigation.navigate("Signup");
   };
 
+  const validateEmail = (email) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(email);
+  };
+
   const handleSubmit = async () => {
     if (email === "" || password === "") {
-      Alert.alert("Error", "Please fill in all fields");
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: "Please fill in all fields.",
+      });
       return;
     }
 
+    if (!validateEmail(email)) {
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: "Please enter a valid email address",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
       const data = await login({ email, password });
-      console.log(data);
+      dispatch(setUserinfo(data));
+      console.log(userInfo.data.id);
+      // console.log(data);
       setEmail("");
       setPassword("");
-      navigation.navigate("Home");
+
+      data.isSuccess && navigation.navigate("Home");
     } catch (error) {
       console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2: "Check your credentials and try again.",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -46,7 +82,6 @@ const Login = () => {
       end={{ x: 0.5, y: 1 }}
       style={{ flex: 1 }}
     >
-      {/* <Header /> */}
       <View style={styles.container}>
         <StatusBar style="auto" />
         <Image source={require("../../images/logo.png")} style={styles.logo} />
@@ -67,8 +102,14 @@ const Login = () => {
           onChangeText={(text) => setPassword(text)}
           autoCapitalize="none"
         />
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity
+          style={[styles.button, isLoading && styles.buttonDisabled]} // Disable button when loading
+          onPress={handleSubmit}
+          disabled={isLoading} // Prevent button press while loading
+        >
+          <Text style={styles.buttonText}>
+            {isLoading ? "Logging In..." : "Login"}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
@@ -122,12 +163,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  buttonDisabled: {
+    backgroundColor: "#555", // Change color when loading
+  },
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
   },
-
   createAccountButton: {
     width: "80%",
     marginHorizontal: "auto",

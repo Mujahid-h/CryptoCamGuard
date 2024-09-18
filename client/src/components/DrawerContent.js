@@ -7,10 +7,14 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { ImageContext } from "../context/ImageContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserinfo } from "../redux/userSlice";
 
 const DrawerContent = () => {
   const navigation = useNavigation();
   const { setSelectedImage } = useContext(ImageContext);
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.user);
 
   const handleCameraLaunch = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();

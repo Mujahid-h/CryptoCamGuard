@@ -1,32 +1,30 @@
 import React, { useContext, useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Alert,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DefaultLayout from "../components/DefaultLayout";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import CameraSvg from "../../images/camera.svg";
 import * as ImagePicker from "expo-image-picker";
 import { ImageContext } from "../context/ImageContext";
+import Camera from "../../images/camera.png";
+import { uploadImagesWithIds } from "../api/imageApi";
+import { useSelector } from "react-redux";
+import Toast from "react-native-toast-message";
 
 const HomePage = () => {
   const { selectedImage, setSelectedImage } = useContext(ImageContext);
+  const { userInfo } = useSelector((state) => state.user);
+  const userId = userInfo.data.id;
 
   const openImagePicker = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      Alert.alert(
-        "Permission Denied",
-        "Gallery access is required to select images."
-      );
+      Toast.show({
+        type: "error",
+        text1: "Permission Denied",
+        text2: "Gallery access is required to select images.",
+      });
       return;
     }
 
@@ -46,10 +44,11 @@ const HomePage = () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      Alert.alert(
-        "Permission Denied",
-        "Camera access is required to take photos."
-      );
+      Toast.show({
+        type: "error",
+        text1: "Permission Denied",
+        text2: "Camera access is required to take photos.",
+      });
       return;
     }
 
@@ -61,6 +60,39 @@ const HomePage = () => {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (selectedImage) {
+      try {
+        const imageToUpload = {
+          uri: selectedImage,
+          type: "image/jpeg",
+          fileName: "photo.jpg",
+        };
+        const response = await uploadImagesWithIds(imageToUpload, userId);
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Image uploaded successfully.",
+        });
+        setSelectedImage(null);
+        console.log("Upload response:", response);
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed to upload the image.",
+        });
+        console.error(error);
+      }
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "No image selected.",
+      });
     }
   };
 
@@ -101,30 +133,22 @@ const HomePage = () => {
               />
             </>
           ) : (
-            <CameraSvg width={250} height={300} />
+            <Image
+              source={Camera}
+              style={{ width: 200, height: 250, borderRadius: 10 }}
+              resizeMode="contain"
+            />
           )}
         </View>
+
+        <Text>"Selected Image URI:", {selectedImage}</Text>
 
         <View style={{ gap: 20 }}>
           {selectedImage ? (
             <>
-              <TouchableOpacity
-                style={styles.buttons}
-                // onPress={handleCameraLaunch}
-              >
+              <TouchableOpacity style={styles.buttons} onPress={handleUpload}>
                 <AntDesign name="download" size={24} color="white" />
                 <Text style={styles.buttonText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.buttons}
-                // onPress={openImagePicker}
-              >
-                <MaterialCommunityIcons
-                  name="security"
-                  size={24}
-                  color="white"
-                />
-                <Text style={styles.buttonText}>Encrypt and save</Text>
               </TouchableOpacity>
             </>
           ) : (
