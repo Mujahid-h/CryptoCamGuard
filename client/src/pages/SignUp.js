@@ -3,21 +3,25 @@ import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
-  View,
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { register } from "../api/authApi";
 import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
 
 const SignUp = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
+
+  const buttonHandler = () => {
+    navigation.navigate("Login");
+  };
 
   const handleSignUp = async () => {
     if (fullName === "" || email === "" || mobile === "" || password === "") {
@@ -97,10 +101,19 @@ const SignUp = () => {
         onChangeText={(text) => setPassword(text)}
         autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          handleSignUp();
+          buttonHandler();
+        }}
+      >
         <Text style={styles.buttonText}>Signup</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.AlreadyHaveAnAccount}>
+      <TouchableOpacity
+        style={styles.AlreadyHaveAnAccount}
+        onPress={buttonHandler}
+      >
         <Text style={styles.buttonText}>Already have an account?</Text>
       </TouchableOpacity>
     </LinearGradient>

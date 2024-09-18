@@ -1,6 +1,7 @@
 import React from "react";
-import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const { width } = Dimensions.get("window");
 const DRAWER_WIDTH = width * 0.7;
@@ -47,6 +48,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20, // Top right rounded corner
     borderBottomRightRadius: 20, // Bottom right rounded corner
     color: "#fff",
+  },
+  closeButton: {
+    alignSelf: "flex-end",
+    padding: 10,
   },
 });
 

@@ -10,12 +10,17 @@ import {
   Alert,
 } from "react-native";
 import { login } from "../api/authApi";
-import { LinearGradient } from "expo-linear-gradient"; // Correct import
-import Header from "../components/Header";
+import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
+
+  const handleCreateAccount = () => {
+    navigation.navigate("Signup");
+  };
 
   const handleSubmit = async () => {
     if (email === "" || password === "") {
@@ -28,6 +33,7 @@ const Login = () => {
       console.log(data);
       setEmail("");
       setPassword("");
+      navigation.navigate("Home");
     } catch (error) {
       console.log(error);
     }
@@ -67,7 +73,10 @@ const Login = () => {
         <TouchableOpacity>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.createAccountButton}>
+        <TouchableOpacity
+          style={styles.createAccountButton}
+          onPress={handleCreateAccount}
+        >
           <Text style={styles.buttonText}>Create New Account</Text>
         </TouchableOpacity>
       </View>

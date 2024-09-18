@@ -1,15 +1,25 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const Header = ({ onMenuPress, isDrawerOpen }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity
         onPress={onMenuPress}
-        style={[styles.menuButton, { opacity: isDrawerOpen ? 0 : 1 }]}
+        style={styles.menuButton}
+        disabled={isDrawerOpen}
       >
-        <Feather name="menu" size={28} color="#fff" />
+        {!isDrawerOpen && <Feather name="menu" size={28} color="#fff" />}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={onMenuPress}
+        style={[styles.menuButton, { paddingLeft: 100 }]}
+        disabled={!isDrawerOpen}
+      >
+        {isDrawerOpen && <FontAwesome5 name="reply" size={24} color="white" />}
       </TouchableOpacity>
 
       <View style={styles.logoContainer}>
