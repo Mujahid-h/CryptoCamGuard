@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.7.59:5269/api/User";
+const BASE_URL = "http://192.168.100.6:5269/api/User";
 
 export const login = async (userData) => {
   try {

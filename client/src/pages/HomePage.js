@@ -13,7 +13,7 @@ import Toast from "react-native-toast-message";
 const HomePage = () => {
   const { selectedImage, setSelectedImage } = useContext(ImageContext);
   const { userInfo } = useSelector((state) => state.user);
-  const userId = userInfo.data.id;
+  const userId = userInfo?.data?.id;
 
   const openImagePicker = async () => {
     const permissionResult =
@@ -140,8 +140,6 @@ const HomePage = () => {
             />
           )}
         </View>
-
-        <Text>"Selected Image URI:", {selectedImage}</Text>
 
         <View style={{ gap: 20 }}>
           {selectedImage ? (

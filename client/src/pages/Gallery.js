@@ -3,6 +3,9 @@ import { View, Image, ScrollView, StyleSheet, Text } from "react-native";
 import { fetchImagesWithIds } from "../api/imageApi";
 import DefaultLayout from "../components/DefaultLayout";
 import { useSelector } from "react-redux";
+import { TouchableOpacity } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { encryptImage } from "../api/encryptionApi";
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
@@ -10,11 +13,14 @@ const Gallery = () => {
   const [error, setError] = useState(null);
   const { userInfo } = useSelector((state) => state.user);
   const userId = userInfo.data.id;
+  const encryptedKey = userInfo.data.encryptionKey;
+  const ivKey = userInfo.data.ivKey;
 
   useEffect(() => {
     const getImages = async () => {
       try {
         const imagesData = await fetchImagesWithIds(userId);
+        console.log(imagesData[0]);
         setImages(imagesData);
         setIsLoading(false);
       } catch (err) {
@@ -25,6 +31,14 @@ const Gallery = () => {
 
     getImages();
   }, []);
+
+  // const handleEncrypt = async () => {
+  //   try {
+  //     const response = await encryptImage(imagesData.id, encryptedKey, ivKey);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   if (isLoading) {
     return <Text style={styles.loadingText}>Loading...</Text>;
@@ -38,7 +52,6 @@ const Gallery = () => {
     <DefaultLayout>
       <ScrollView contentContainerStyle={styles.container}>
         {images.length > 0 ? (
-          // Filter images where isEncrypted is false before mapping them
           images
             .filter((imageData) => imageData.isEncrypted === false)
             .map((imageData) => (
@@ -49,7 +62,16 @@ const Gallery = () => {
                   }}
                   style={styles.image}
                 />
-                <Text style={styles.imageId}>Image {imageData.id}</Text>
+                <View style={styles.imageDetails}>
+                  <Text style={styles.imageId}>Image {imageData.id}</Text>
+                  <TouchableOpacity>
+                    <MaterialCommunityIcons
+                      name="image-off"
+                      size={24}
+                      color="white"
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             ))
         ) : (
@@ -64,22 +86,35 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    padding: 10,
   },
   imageContainer: {
     alignItems: "center",
     marginBottom: 20,
+    borderWidth: 0.5,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#333", // Dark background for contrast
   },
   image: {
-    width: 150,
-    height: 200,
-    margin: 10,
+    width: 120,
+    height: 160,
+    marginBottom: 10,
     resizeMode: "contain",
-    borderRadius: 8,
+    borderRadius: 4,
+  },
+  imageDetails: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: 140,
   },
   imageId: {
-    color: "#000",
+    color: "white",
     fontWeight: "bold",
+    fontSize: 16,
   },
   loadingText: {
     fontSize: 20,

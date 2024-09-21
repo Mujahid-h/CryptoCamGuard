@@ -39,13 +39,22 @@ const DrawerContent = () => {
     }
   };
 
+  const handleLgout = () => {
+    try {
+      dispatch(setUserinfo(null));
+      navigation.navigate("Login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.drawerContent}>
       <View style={styles.header}>
         <Avatar.Image size={44} source={require("../../assets/icon.png")} />
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>Mujahid Hussain</Text>
-          <Text style={styles.userLocation}>Karachi, Pakistan</Text>
+          <Text style={styles.userName}>{userInfo.data.name}</Text>
+          <Text style={styles.userLocation}>{userInfo.data.email}</Text>
         </View>
       </View>
 
@@ -83,10 +92,7 @@ const DrawerContent = () => {
           <Text style={styles.menuText}>Encrypted Images</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => navigation.navigate("Login")}
-        >
+        <TouchableOpacity style={styles.menuItem} onPress={handleLgout}>
           <AntDesign name="logout" size={20} color="#fff" />
           <Text style={styles.menuText}>Logout</Text>
         </TouchableOpacity>

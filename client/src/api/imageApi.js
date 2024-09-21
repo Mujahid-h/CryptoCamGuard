@@ -1,12 +1,13 @@
 import axios from "axios";
 
-BASE_URL = "http://192.168.7.59:5269/api/GalleryPhotos";
+BASE_URL = "http://192.168.100.6:5269/api/GalleryPhotos";
 
 export const fetchImagesWithIds = async (userId) => {
   try {
+    console.log(userId);
     const response = await axios.get(`${BASE_URL}?userId=${userId}`);
 
-    // console.log("Response Data: ", response.data);
+    console.log("Response Data: ", response);
     return response.data;
   } catch (error) {
     console.error("Error fetching images", error);
