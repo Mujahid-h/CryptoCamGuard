@@ -13,6 +13,8 @@ import { register } from "../api/authApi";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 
+// Aj ki Taarekh September 22 ka commit
+
 const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
