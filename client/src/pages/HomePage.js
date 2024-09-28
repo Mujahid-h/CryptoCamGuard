@@ -9,12 +9,14 @@ import Camera from "../../images/camera.png";
 import { uploadImagesWithIds } from "../api/imageApi";
 import { useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
+import axios from "axios";
 
 const HomePage = () => {
   const { selectedImage, setSelectedImage } = useContext(ImageContext);
   const { userInfo } = useSelector((state) => state.user);
   const userId = userInfo?.data?.id;
-
+  const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dwvw3ma7z/image/upload';
+  const CLOUDINARY_UPLOAD_PRESET = 'cryptopreset'; 
   const openImagePicker = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -39,7 +41,41 @@ const HomePage = () => {
       setSelectedImage(result.assets[0].uri);
     }
   };
+  const handleUpload = async () => {
+    if (!selectedImage) return;
 
+    const formData = new FormData();
+    formData.append('file', {
+      uri: selectedImage,
+      type: 'image/jpeg',
+      name: 'upload.jpg',
+    });
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const response = await axios.post(CLOUDINARY_URL, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log('Uploaded successfully:', response.data);
+      const resp = await uploadImagesWithIds(response.data.secure_url, userId);
+     
+      Toast.show({
+                type: "success",
+                text1: "Success",
+                text2: "Image uploaded successfully.",
+              });
+              setSelectedImage(null);
+              console.log("Upload response:", response);
+
+    } catch (error) {
+      console.log('Error uploading image:', error);
+              Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed to upload the image.",
+        });
+    }
+  };
   const handleCameraLaunch = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -60,39 +96,6 @@ const HomePage = () => {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (selectedImage) {
-      try {
-        const imageToUpload = {
-          uri: selectedImage,
-          type: "image/jpeg",
-          fileName: "photo.jpg",
-        };
-        const response = await uploadImagesWithIds(imageToUpload, userId);
-        Toast.show({
-          type: "success",
-          text1: "Success",
-          text2: "Image uploaded successfully.",
-        });
-        setSelectedImage(null);
-        console.log("Upload response:", response);
-      } catch (error) {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Failed to upload the image.",
-        });
-        console.error(error);
-      }
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "No image selected.",
-      });
     }
   };
 

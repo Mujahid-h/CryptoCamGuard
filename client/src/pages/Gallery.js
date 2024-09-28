@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { encryptImage } from "../api/encryptionApi";
+import Toast from "react-native-toast-message";
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
@@ -20,8 +21,7 @@ const Gallery = () => {
     const getImages = async () => {
       try {
         const imagesData = await fetchImagesWithIds(userId);
-        console.log(imagesData[0]);
-        setImages(imagesData);
+        setImages(imagesData?.data);
         setIsLoading(false);
       } catch (err) {
         setError("Failed to load images.");
@@ -31,14 +31,25 @@ const Gallery = () => {
 
     getImages();
   }, []);
-
-  // const handleEncrypt = async () => {
-  //   try {
-  //     const response = await encryptImage(imagesData.id, encryptedKey, ivKey);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  
+const handleEncrypted=async(photoId)=>{
+  try {
+    await encryptImage({photoId,isEncrypt:true,encryptedKey:"string",ivKEy:"string"})
+    Toast.show({
+      type: "success",
+      text1: "Success",
+     
+    });
+    getImages()
+  } catch (error) {
+    Toast.show({
+      type: "error",
+      text1: "Error while encrypting",
+     
+    });
+    
+  }
+}
 
   if (isLoading) {
     return <Text style={styles.loadingText}>Loading...</Text>;
@@ -58,13 +69,13 @@ const Gallery = () => {
               <View key={imageData.id} style={styles.imageContainer}>
                 <Image
                   source={{
-                    uri: `data:${imageData.fileType};base64,${imageData.imageData}`,
+                    uri: imageData?.imageLink
                   }}
                   style={styles.image}
                 />
                 <View style={styles.imageDetails}>
                   <Text style={styles.imageId}>Image {imageData.id}</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={()=>{handleEncrypted(imageData?.photoId)}}>
                     <MaterialCommunityIcons
                       name="image-off"
                       size={24}

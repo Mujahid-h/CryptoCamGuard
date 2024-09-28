@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.100.6:5269/api/User";
+const BASE_URL = "https://cryptocamguard.azurewebsites.net/api/User";
 
 export const login = async (userData) => {
   try {
