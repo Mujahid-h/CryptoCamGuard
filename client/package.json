@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.21.0",
     "@expo/metro-runtime": "~3.2.1",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "6.4.1",

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-BASE_URL = "http://192.168.100.6:5269/api";
+BASE_URL = " https://cryptocamguard.azurewebsites.net/api";
 
 export const encryptImage = async (galleryPhotoId, encryptedKey, IV) => {
   try {

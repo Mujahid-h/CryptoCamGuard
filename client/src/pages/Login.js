@@ -22,7 +22,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false); // For loading state
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { userInfo } = useSelector((state) => state.user);
 
   const handleCreateAccount = () => {
     navigation.navigate("Signup");
@@ -32,6 +31,48 @@ const Login = () => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(email);
   };
+
+  // const handleSubmit = async () => {
+  //   if (email === "" || password === "") {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Login Failed",
+  //       text2: "Please fill in all fields.",
+  //     });
+  //     return;
+  //   }
+
+  //   if (!validateEmail(email)) {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Login Failed",
+  //       text2: "Please enter a valid email address",
+  //     });
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+
+  //   try {
+  //     const data = await login({ email, password });
+  //     dispatch(setUserinfo(data));
+  //     console.log(userInfo.data.id);
+  //     // console.log(data);
+  //     setEmail("");
+  //     setPassword("");
+
+  //     data.isSuccess && navigation.navigate("Home");
+  //   } catch (error) {
+  //     console.log(error);
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Login Failed",
+  //       text2: "Check your credentials and try again.",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleSubmit = async () => {
     if (email === "" || password === "") {
@@ -56,25 +97,36 @@ const Login = () => {
 
     try {
       const data = await login({ email, password });
-      dispatch(setUserinfo(data));
-      console.log(userInfo.data.id);
-      // console.log(data);
-      setEmail("");
-      setPassword("");
 
-      data.isSuccess && navigation.navigate("Home");
+      if (data.isSuccess) {
+        await dispatch(setUserinfo(data));
+        console.log(data.data.id);
+        setEmail("");
+        setPassword("");
+        navigation.navigate("Home");
+        Toast.show({
+          type: "success",
+          text1: "Login Success",
+          text2: "You have successfully signin",
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Login Failed",
+          text2: data.message || "Check your credentials and try again.",
+        });
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Login error:", error);
       Toast.show({
         type: "error",
         text1: "Login Failed",
-        text2: "Check your credentials and try again.",
+        text2: "An unexpected error occurred. Please try again.",
       });
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <LinearGradient
       colors={["#0D1B2A", "#10E0F0"]}

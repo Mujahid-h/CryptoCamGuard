@@ -9,6 +9,7 @@ import Camera from "../../images/camera.png";
 import { uploadImagesWithIds } from "../api/imageApi";
 import { useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
+import axios from "axios";
 
 const HomePage = () => {
   const { selectedImage, setSelectedImage } = useContext(ImageContext);
@@ -63,15 +64,79 @@ const HomePage = () => {
     }
   };
 
+  const uploadImageToCloudinary = async (imageUri) => {
+    const data = new FormData();
+    data.append("file", {
+      uri: imageUri,
+      type: "image/jpeg",
+      name: "upload.jpg",
+    });
+    data.append("upload_preset", "myCloud");
+    data.append("cloud_name", "dz0msc6pb");
+    console.log(data);
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dz0msc6pb/image/upload",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          timeout: 10000,
+        }
+      );
+      console.log(response);
+      // return response.data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      // throw error;/
+    }
+  };
+
+  // const handleUpload = async () => {
+  //   if (selectedImage) {
+  //     try {
+  //       const imageToUpload = {
+  //         uri: selectedImage,
+  //         type: "image/jpeg",
+  //         fileName: "photo.jpg",
+  //       };
+  //       const response = await uploadImagesWithIds(imageToUpload, userId);
+  //       Toast.show({
+  //         type: "success",
+  //         text1: "Success",
+  //         text2: "Image uploaded successfully.",
+  //       });
+  //       setSelectedImage(null);
+  //       console.log("Upload response:", response);
+  //     } catch (error) {
+  //       Toast.show({
+  //         type: "error",
+  //         text1: "Error",
+  //         text2: "Failed to upload the image.",
+  //       });
+  //       console.error(error);
+  //     }
+  //   } else {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Error",
+  //       text2: "No image selected.",
+  //     });
+  //   }
+  // };
+
   const handleUpload = async () => {
     if (selectedImage) {
       try {
-        const imageToUpload = {
-          uri: selectedImage,
-          type: "image/jpeg",
-          fileName: "photo.jpg",
-        };
-        const response = await uploadImagesWithIds(imageToUpload, userId);
+        console.log(userId, selectedImage);
+
+        // Upload to Cloudinary first
+        const imageUrl = await uploadImageToCloudinary(selectedImage);
+
+        // Then send the image URL and userId to your API
+        const response = await uploadImagesWithIds(imageUrl, userId);
+
         Toast.show({
           type: "success",
           text1: "Success",

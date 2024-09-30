@@ -51,7 +51,7 @@ const DrawerContent = () => {
   return (
     <View style={styles.drawerContent}>
       <View style={styles.header}>
-        <Avatar.Image size={44} source={require("../../assets/icon.png")} />
+        <Avatar.Image size={44} source={require("../../images/avatar.png")} />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{userInfo.data.name}</Text>
           <Text style={styles.userLocation}>{userInfo.data.email}</Text>

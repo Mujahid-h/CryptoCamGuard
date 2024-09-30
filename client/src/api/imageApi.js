@@ -1,6 +1,6 @@
 import axios from "axios";
 
-BASE_URL = "http://192.168.100.6:5269/api/GalleryPhotos";
+BASE_URL = "https://cryptocamguard.azurewebsites.net/api/Photo";
 
 export const fetchImagesWithIds = async (userId) => {
   try {
@@ -15,30 +15,45 @@ export const fetchImagesWithIds = async (userId) => {
   }
 };
 
-export const uploadImagesWithIds = async (image, userId) => {
+export const uploadImagesWithIds = async (imageLink, userId) => {
   try {
-    const formData = new FormData();
-
-    // Append the file
-    formData.append("file", {
-      uri: image.uri,
-      type: image.type || "image/jpeg",
-      name: image.fileName || "photo.jpg",
+    const response = await axios.post(`${BASE_URL}/Save`, {
+      imageLink,
+      userId,
     });
 
-    // Append userId separately
-    formData.append("userId", userId.toString());
-
-    const response = await axios.post(BASE_URL, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    console.log(response.data);
+    console.log("Response Data:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error uploading image", error);
     throw error;
   }
 };
+
+// export const uploadImagesWithIds = async (image, userId) => {
+//   try {
+//     const formData = new FormData();
+
+//     // Append the file
+//     formData.append("file", {
+//       uri: image.uri,
+//       type: image.type || "image/jpeg",
+//       name: image.fileName || "photo.jpg",
+//     });
+
+//     // Append userId separately
+//     formData.append("userId", userId.toString());
+
+//     const response = await axios.post(BASE_URL, formData, {
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+
+//     console.log(response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error uploading image", error);
+//     throw error;
+//   }
+// };
