@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { View, Image, ScrollView, StyleSheet, Text } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { fetchImagesWithIds } from "../api/imageApi";
 import DefaultLayout from "../components/DefaultLayout";
 import { useSelector } from "react-redux";
-import { TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { encryptImage } from "../api/encryptionApi";
+import Toast from "react-native-toast-message";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
@@ -16,36 +24,65 @@ const Gallery = () => {
   const encryptedKey = userInfo.data.encryptionKey;
   const ivKey = userInfo.data.ivKey;
 
-  useEffect(() => {
-    const getImages = async () => {
-      try {
-        const imagesData = await fetchImagesWithIds(userId);
-        console.log(imagesData[0]);
-        setImages(imagesData);
+  const getImages = async () => {
+    try {
+      const imagesData = await fetchImagesWithIds(userId, false);
+      if (imagesData?.message == "Not Found" || imagesData?.data == null) {
         setIsLoading(false);
-      } catch (err) {
-        setError("Failed to load images.");
+      } else {
+        setImages(imagesData?.data);
         setIsLoading(false);
       }
-    };
+    } catch (err) {
+      setError("Failed to load image.");
+      setIsLoading(false);
+    }
+  };
 
-    getImages();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getImages();
+    }, [])
+  );
 
-  // const handleEncrypt = async () => {
-  //   try {
-  //     const response = await encryptImage(imagesData.id, encryptedKey, ivKey);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const handleEncrypted = async (photoId) => {
+    try {
+      await encryptImage({
+        photoId,
+        isEncrypt: true,
+        encryptedKey: "string",
+        ivKey: "string",
+      });
+      Toast.show({
+        type: "success",
+        text1: "Image encrypted successfully!",
+      });
+      await getImages();
+      setImages((prevImages) =>
+        prevImages.filter((imageData) => imageData.photoId !== photoId)
+      );
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error while encrypting",
+      });
+    }
+  };
 
   if (isLoading) {
-    return <Text style={styles.loadingText}>Loading...</Text>;
+    return (
+      <DefaultLayout>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </DefaultLayout>
+    );
   }
 
   if (error) {
-    return <Text style={styles.errorText}>{error}</Text>;
+    return (
+      <DefaultLayout>
+        <Text style={styles.errorText}>{error}</Text>
+      </DefaultLayout>
+    );
   }
 
   return (
@@ -58,15 +95,19 @@ const Gallery = () => {
               <View key={imageData.id} style={styles.imageContainer}>
                 <Image
                   source={{
-                    uri: `data:${imageData.fileType};base64,${imageData.imageData}`,
+                    uri: imageData?.imageLink,
                   }}
                   style={styles.image}
                 />
                 <View style={styles.imageDetails}>
-                  <Text style={styles.imageId}>Image {imageData.id}</Text>
-                  <TouchableOpacity>
+                  <Text style={styles.imageId}>Image {imageData.photoId}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleEncrypted(imageData?.photoId);
+                    }}
+                  >
                     <MaterialCommunityIcons
-                      name="image-off"
+                      name="shield-lock"
                       size={24}
                       color="white"
                     />
@@ -75,7 +116,9 @@ const Gallery = () => {
               </View>
             ))
         ) : (
-          <Text style={styles.noImagesText}>No images to display</Text>
+          <Text style={styles.noImagesText}>
+            No images to display, Capture or upload one to show images
+          </Text>
         )}
       </ScrollView>
     </DefaultLayout>
@@ -96,7 +139,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "#333", // Dark background for contrast
+    backgroundColor: "#333",
   },
   image: {
     width: 120,
@@ -130,7 +173,7 @@ const styles = StyleSheet.create({
   },
   noImagesText: {
     fontSize: 18,
-    color: "#555",
+    color: "#fff",
     textAlign: "center",
     marginTop: 20,
   },

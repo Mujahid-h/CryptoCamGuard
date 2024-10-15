@@ -1,16 +1,20 @@
-import axios from "axios";
+const BASE_URL =
+  "https://cryptocamguard.azurewebsites.net/api/Photo/EncryptDecrypt";
 
-BASE_URL = " https://cryptocamguard.azurewebsites.net/api";
-
-export const encryptImage = async (galleryPhotoId, encryptedKey, IV) => {
+export const encryptImage = async (formData) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/Encrypt?galleryPhotoId=${galleryPhotoId}&${encryptedKey}&${IV}`
-    );
-    return response.data;
-    console.log(response.data);
+    const response = await fetch(BASE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error("Error fetching images", error);
+    console.error("Error encrypting image", error);
     throw error;
   }
 };

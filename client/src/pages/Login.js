@@ -32,48 +32,6 @@ const Login = () => {
     return re.test(email);
   };
 
-  // const handleSubmit = async () => {
-  //   if (email === "" || password === "") {
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Login Failed",
-  //       text2: "Please fill in all fields.",
-  //     });
-  //     return;
-  //   }
-
-  //   if (!validateEmail(email)) {
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Login Failed",
-  //       text2: "Please enter a valid email address",
-  //     });
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-
-  //   try {
-  //     const data = await login({ email, password });
-  //     dispatch(setUserinfo(data));
-  //     console.log(userInfo.data.id);
-  //     // console.log(data);
-  //     setEmail("");
-  //     setPassword("");
-
-  //     data.isSuccess && navigation.navigate("Home");
-  //   } catch (error) {
-  //     console.log(error);
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Login Failed",
-  //       text2: "Check your credentials and try again.",
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleSubmit = async () => {
     if (email === "" || password === "") {
       Toast.show({
@@ -98,24 +56,24 @@ const Login = () => {
     try {
       const data = await login({ email, password });
 
-      if (data.isSuccess) {
-        await dispatch(setUserinfo(data));
-        console.log(data.data.id);
-        setEmail("");
-        setPassword("");
-        navigation.navigate("Home");
-        Toast.show({
-          type: "success",
-          text1: "Login Success",
-          text2: "You have successfully signin",
-        });
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "Login Failed",
-          text2: data.message || "Check your credentials and try again.",
-        });
-      }
+      // if (data.isSuccess) {
+      await dispatch(setUserinfo(data));
+      // console.log(data.data);
+      setEmail("");
+      setPassword("");
+      navigation.navigate("Home");
+      Toast.show({
+        type: "success",
+        text1: "Login Success",
+        text2: "You have successfully signin",
+      });
+      // } else {
+      //   Toast.show({
+      //     type: "error",
+      //     text1: "Login Failed",
+      //     text2: data.message || "Check your credentials and try again.",
+      //   });
+      // }
     } catch (error) {
       console.error("Login error:", error);
       Toast.show({

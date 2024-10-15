@@ -20,7 +20,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // For loading state
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const validateEmail = (email) => {
@@ -29,7 +29,7 @@ const SignUp = () => {
   };
 
   const validateMobile = (mobile) => {
-    const re = /^[0-9]{6}$/; // Assumes a 10-digit mobile number
+    const re = /^[0-9]{11}$/;
     return re.test(mobile);
   };
 

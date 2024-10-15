@@ -44,7 +44,7 @@ const DrawerContent = () => {
       dispatch(setUserinfo(null));
       navigation.navigate("Login");
     } catch (error) {
-      console.log(error);
+      error;
     }
   };
 

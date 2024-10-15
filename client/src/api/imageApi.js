@@ -1,59 +1,45 @@
-import axios from "axios";
-
 BASE_URL = "https://cryptocamguard.azurewebsites.net/api/Photo";
 
-export const fetchImagesWithIds = async (userId) => {
+// Fetch Images with UserId using Fetch API
+export const fetchImagesWithIds = async (userId, encrypted) => {
   try {
-    console.log(userId);
-    const response = await axios.get(`${BASE_URL}?userId=${userId}`);
+    const response = await fetch(
+      `${BASE_URL}/GetImages?userId=${userId}&isEncrypted=${encrypted}`,
+      {
+        method: "GET",
+      }
+    );
 
-    console.log("Response Data: ", response);
-    return response.data;
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching images", error);
     throw error;
   }
 };
 
-export const uploadImagesWithIds = async (imageLink, userId) => {
+// Upload Image with UserId using Fetch API
+export const uploadImagesWithIds = async (image, userId) => {
   try {
-    const response = await axios.post(`${BASE_URL}/Save`, {
-      imageLink,
-      userId,
+    const response = await fetch(`${BASE_URL}/Save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Set headers if needed
+      },
+      body: JSON.stringify({
+        imageLink: image,
+        userId: userId,
+      }),
     });
 
-    console.log("Response Data:", response.data);
-    return response.data;
+    if (!response.ok) {
+      throw new Error("Error uploading image");
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error uploading image", error);
     throw error;
   }
 };
-
-// export const uploadImagesWithIds = async (image, userId) => {
-//   try {
-//     const formData = new FormData();
-
-//     // Append the file
-//     formData.append("file", {
-//       uri: image.uri,
-//       type: image.type || "image/jpeg",
-//       name: image.fileName || "photo.jpg",
-//     });
-
-//     // Append userId separately
-//     formData.append("userId", userId.toString());
-
-//     const response = await axios.post(BASE_URL, formData, {
-//       headers: {
-//         "Content-Type": "multipart/form-data",
-//       },
-//     });
-
-//     console.log(response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error uploading image", error);
-//     throw error;
-//   }
-// };
